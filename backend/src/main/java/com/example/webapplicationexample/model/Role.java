@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Роль пользвателя
+ */
 @Entity
 @Table(name = "roles")
 @Data

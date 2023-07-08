@@ -1,6 +1,5 @@
 package com.example.webapplicationexample.model;
 
-import com.example.webapplicationexample.model.enum_model.EStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,19 +7,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Статус Заметки
+ * Категория
  */
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "statuses")
-public class Status {
+@Table(name = "categories")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
-    @Enumerated(EnumType.STRING)
     @NotBlank
-    private EStatus status;
+    private String category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 
 
 /**
- * Покупатель
+ * Пользователь
  */
 @Entity
 @Data

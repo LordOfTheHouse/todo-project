@@ -1,0 +1,26 @@
+###
+POST localhost:8080/category
+Content-Type: application/json
+
+{
+  "category": "NEW_CATEGORY",
+  "user": {"id":1}
+}
+
+###
+PUT localhost:8080/category
+Content-Type: application/json
+
+{
+  "id": 2,
+  "category": "NOOOOOOOOO",
+  "user": {"id":1}
+}
+
+###
+#GET /category/{userId}
+GET localhost:8080/category/1
+
+###
+DELETE localhost:8080/category?category=1
+

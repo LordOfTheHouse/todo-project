@@ -1,0 +1,66 @@
+###
+POST localhost:8080/tasks
+Content-Type: application/json
+
+{
+    "title": "Название задачи",
+    "description": "Описание задачи",
+    "dateNotify": "2023-07-08 20:50:12",
+  "category": {
+    "id": 1
+  },
+  "regularity": {
+    "id": 1
+  },
+  "priority": {
+    "id": 1
+  },
+  "status": {
+    "id": 1
+  }
+}
+
+###
+PUT localhost:8080/tasks
+Content-Type: application/json
+
+{
+  "id": 3,
+  "title": "Название",
+  "description": "Новое описание задачи",
+  "dateNotify": "2023-07-08 21:55:12",
+  "category": {
+    "id": 1
+  },
+  "regularity": {
+    "id": 1
+  },
+  "priority": {
+    "id": 1
+  },
+  "status": {
+    "id": 1
+  }
+}
+
+###
+#DELETE /tasks/{taskId}
+DELETE localhost:8080/tasks/1
+
+###
+GET localhost:8080/tasks?userId=1
+
+###
+GET localhost:8080/tasks/categories?categoryId=1
+
+###
+GET http://localhost:8080/tasks/notify?userId=1
+
+###
+GET http://localhost:8080/tasks/statuses
+
+###
+GET http://localhost:8080/tasks/priorities
+
+###
+GET http://localhost:8080/tasks/regularities
