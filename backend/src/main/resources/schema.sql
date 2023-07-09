@@ -2,8 +2,7 @@ create schema if not exists katerniuksm;
 
 INSERT INTO katerniuksm.roles (id, name)
 VALUES
-    (1, 'ROLE_USER'),
-    (2, 'ROLE_ADMIN');
+    (1, 'ROLE_USER');
 INSERT INTO katerniuksm.statuses (id, status)
 VALUES
     (1, 'IN_PROGRESS'),

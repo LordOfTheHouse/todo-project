@@ -49,7 +49,10 @@ public class TaskController {
     public ResponseEntity<?> addTask(@Valid @RequestBody Task task) {
         long taskId = taskService.save(task);
         log.info("Добавление задачи {}", task);
-        return ResponseEntity.created(URI.create("tasks/" + taskId)).build();
+        if(taskId != -1) {
+            return ResponseEntity.created(URI.create("tasks/" + taskId)).build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     /**
@@ -92,13 +95,12 @@ public class TaskController {
     /**
      * Возвращает список всех задач пользователя по его идентификатору.
      *
-     * @param userId идентификатор
      * @return список задач
      */
     @GetMapping
-    public List<CroppedTask> getTasks(@RequestParam long userId) {
-        log.info("Возвращает всек задач пользователя с id: {}", userId);
-        return taskService.findAll(userId);
+    public List<CroppedTask> getTasks(){
+        log.info("Возвращает всек задач пользователя с id");
+        return taskService.findAll();
     }
 
     /**
@@ -116,13 +118,12 @@ public class TaskController {
     /**
      * Возвращает список всех задач о которых требуется выслать уведомления пользователю
      *
-     * @param userId индификатор
      * @return список задач
      */
     @GetMapping("/notify")
-    public List<CroppedTask> getNotifyTasks(@RequestParam long userId) {
+    public List<CroppedTask> getNotifyTasks() {
         log.info("Получение задач требующих уведомления");
-        return taskService.isNotifyTasks(userId);
+        return taskService.isNotifyTasks();
     }
 
     /**

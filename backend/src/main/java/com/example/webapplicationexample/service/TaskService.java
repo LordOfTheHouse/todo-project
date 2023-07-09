@@ -1,6 +1,5 @@
 package com.example.webapplicationexample.service;
 
-import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.Task;
 import com.example.webapplicationexample.model.cropped.CroppedTask;
 
@@ -38,10 +37,9 @@ public interface TaskService {
     /**
      * Возвращает список всех задач пользователя.
      *
-     * @param userId Идентификатор пользователя.
      * @return Список сокращенной информации о задачах пользователя.
      */
-    List<CroppedTask> findAll(long userId);
+    List<CroppedTask> findAll();
 
     /**
      * Возвращает список задач из указанной категории.
@@ -54,9 +52,8 @@ public interface TaskService {
     /**
      * Возвращает список задач, требующих уведомления, для указанного пользователя.
      *
-     * @param userId Идентификатор пользователя.
      * @return Список задач, требующих уведомления.
      */
-    List<CroppedTask> isNotifyTasks(long userId);
+    List<CroppedTask> isNotifyTasks();
 }
 

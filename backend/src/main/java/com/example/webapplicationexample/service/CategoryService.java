@@ -31,8 +31,13 @@ public interface CategoryService {
 
     /**
      * Возвращает все категории пользователя
-     * @param userId - индификатор пользователя
      * @return список категорий
      */
-    List<CroppedCategory> findAll(long userId);
+    List<CroppedCategory> findAll();
+
+    /**
+     * Проверяет существует ли у пользователя данная категория
+     * @param idCategory - индификатор категории
+     */
+    boolean existByCategoryUser(long idCategory);
 }

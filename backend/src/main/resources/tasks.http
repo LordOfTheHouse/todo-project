@@ -1,5 +1,6 @@
 ###
 POST localhost:8080/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 Content-Type: application/json
 
 {
@@ -7,7 +8,7 @@ Content-Type: application/json
     "description": "Описание задачи",
     "dateNotify": "2023-07-08 20:50:12",
   "category": {
-    "id": 1
+    "id": 3
   },
   "regularity": {
     "id": 1
@@ -22,15 +23,16 @@ Content-Type: application/json
 
 ###
 PUT localhost:8080/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 Content-Type: application/json
 
 {
-  "id": 3,
+  "id": 5,
   "title": "Название",
   "description": "Новое описание задачи",
-  "dateNotify": "2023-07-08 21:55:12",
+  "dateNotify": "2023-07-09 12:27:12",
   "category": {
-    "id": 1
+    "id": 2
   },
   "regularity": {
     "id": 1
@@ -45,22 +47,28 @@ Content-Type: application/json
 
 ###
 #DELETE /tasks/{taskId}
-DELETE localhost:8080/tasks/1
+DELETE localhost:8080/tasks/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 
 ###
-GET localhost:8080/tasks?userId=1
+GET localhost:8080/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 
 ###
-GET localhost:8080/tasks/categories?categoryId=1
+GET localhost:8080/tasks/categories?categoryId=4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 
 ###
-GET http://localhost:8080/tasks/notify?userId=1
-
+GET http://localhost:8080/tasks/notify
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 ###
 GET http://localhost:8080/tasks/statuses
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 
 ###
 GET http://localhost:8080/tasks/priorities
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 
 ###
 GET http://localhost:8080/tasks/regularities
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc

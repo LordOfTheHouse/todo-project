@@ -72,12 +72,11 @@ public class CategoryController {
 
     /**
      * Возвращает все категори пользователя
-     * @param userId
      */
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<CroppedCategory>> getCategories(@PathVariable long userId){
-        log.info("Получение категорий по user id {}", userId);
-        return ResponseEntity.ok().body(categoryService.findAll(userId));
+    @GetMapping("/all")
+    public ResponseEntity<List<CroppedCategory>> getCategories(){
+        log.info("Получение категорий по user id");
+        return ResponseEntity.ok().body(categoryService.findAll());
     }
 
 }
