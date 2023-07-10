@@ -57,8 +57,8 @@ public class CategoryController {
      * Удаляет категорию
      * @param idCategory - индификатор
      */
-    @DeleteMapping
-    public ResponseEntity<?> deleteCategory(@RequestParam long idCategory){
+    @DeleteMapping("/{idCategory}")
+    public ResponseEntity<?> deleteCategory(@PathVariable long idCategory){
         log.info("Удаление категории по id{}", idCategory);
         boolean isDelete = categoryService.delete(idCategory);
         if(isDelete){

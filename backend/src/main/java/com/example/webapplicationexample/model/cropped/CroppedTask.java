@@ -20,6 +20,7 @@ public class CroppedTask {
     private EStatus status;
     private EPriority priority;
     private ERegularity regularity;
+    private CroppedCategory croppedCategory;
 
     public CroppedTask(Task task) {
         this.id = task.getId();
@@ -29,5 +30,6 @@ public class CroppedTask {
         this.status = task.getStatus().getStatus();
         this.priority = task.getPriority().getPriority();
         this.regularity = task.getRegularity().getRegularity();
+        this.croppedCategory = new CroppedCategory(task.getCategory());
     }
 }

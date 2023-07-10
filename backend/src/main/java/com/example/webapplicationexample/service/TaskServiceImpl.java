@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,14 +66,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<CroppedTask> findTaskByCategory(long categoryId) {
-        return categoryService.findAll()
-                .stream()
-                .filter(category->category.getId() == categoryId)
-                .flatMap(category ->
-                        taskRepository.findByCategory_Id(category.getId())
-                                .stream()
-                                .map(CroppedTask::new))
-                .toList();
+        if(categoryService.existByCategoryUser(categoryId)){
+            return taskRepository.findByCategory_Id(categoryId)
+                    .stream()
+                    .map(CroppedTask::new)
+                    .toList();
+        }
+        return List.of();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.example.webapplicationexample.exception.UserNotFound;
 import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.User;
 import com.example.webapplicationexample.model.cropped.CroppedCategory;
+import com.example.webapplicationexample.model.enum_model.ELock;
 import com.example.webapplicationexample.repository.CategoryRepository;
 import com.example.webapplicationexample.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

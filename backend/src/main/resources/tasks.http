@@ -1,5 +1,5 @@
 ###
-POST localhost:8080/tasks
+POST localhost:8080/taskService
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 Content-Type: application/json
 
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ###
-PUT localhost:8080/tasks
+PUT localhost:8080/taskService
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 Content-Type: application/json
 
@@ -46,29 +46,29 @@ Content-Type: application/json
 }
 
 ###
-#DELETE /tasks/{taskId}
-DELETE localhost:8080/tasks/2
+#DELETE /taskService/{taskId}
+DELETE localhost:8080/taskService/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 
 ###
-GET localhost:8080/tasks
+GET localhost:8080/taskService
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 
 ###
-GET localhost:8080/tasks/categories?categoryId=4
+GET localhost:8080/taskService/categories?categoryId=4
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb29nIiwiaWF0IjoxNjg4ODk1NzIwLCJleHAiOjE2ODg5ODIxMjB9.yrP2BGuilKuDV8y8fNDdaMRWd6lzKXT8kq_dTUdvQcQ
 
 ###
-GET http://localhost:8080/tasks/notify
+GET http://localhost:8080/taskService/notify
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 ###
-GET http://localhost:8080/tasks/statuses
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
-
-###
-GET http://localhost:8080/tasks/priorities
+GET http://localhost:8080/taskService/statuses
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
 
 ###
-GET http://localhost:8080/tasks/regularities
+GET http://localhost:8080/taskService/priorities
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
+
+###
+GET http://localhost:8080/taskService/regularities
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb2ciLCJpYXQiOjE2ODg4ODg1NDYsImV4cCI6MTY4ODk3NDk0Nn0.LecUmBXdjHDDtCyJugfw7pX0XKLdA_ptK7yM5-oL1bc
