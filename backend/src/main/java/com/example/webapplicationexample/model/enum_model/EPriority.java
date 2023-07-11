@@ -5,7 +5,8 @@ public enum EPriority {
     MEDIUM,
     LOW,
     URGENT,
-    CRITICAL
+    CRITICAL,
+    NONE
 
 
 }

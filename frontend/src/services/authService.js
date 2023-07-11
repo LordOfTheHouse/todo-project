@@ -1,7 +1,6 @@
 import axios from "axios";
-import {API_URL} from "./API_URL";
 
-const API_URL_CART = API_URL + "api/auth/"
+const API_URL_CART = "/api/auth/"
 const register = (registration) => {
 
     return axios.post(API_URL_CART + "signup", registration);

@@ -1,7 +1,11 @@
 package com.example.webapplicationexample.service;
 
+import com.example.webapplicationexample.exception.UserNotFound;
+import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.Task;
+import com.example.webapplicationexample.model.cropped.CroppedCategory;
 import com.example.webapplicationexample.model.cropped.CroppedTask;
+import com.example.webapplicationexample.model.enum_model.EStatus;
 import com.example.webapplicationexample.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +58,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Task findById(long taskId) {
+        Optional<Task> task = taskRepository.findById(taskId);
+        if (task.isPresent() && categoryService.existByCategoryUser(task.get().getCategory().getId())) {
+            return task.get();
+        }
+        throw new UserNotFound("Ошибка получения задачи пользователя");
+    }
+
+    @Override
     public List<CroppedTask> findAll() {
         return categoryService.findAll()
                 .stream()
@@ -79,6 +92,7 @@ public class TaskServiceImpl implements TaskService {
     public List<CroppedTask> isNotifyTasks() {
         return categoryService.findAll()
                 .stream()
+                .filter(category -> !category.getName().equals("Архив"))
                 .flatMap(category ->
                         taskRepository.findByCategory_Id(category.getId())
                                 .stream()
@@ -93,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
      * @return истина если о задаче требуется уведомлять
      */
     private static boolean isNotify(Task task) {
-        if(task.getDateNotify() == null){
+        if(task.getDateNotify() == null || task.getStatus().getStatus() == EStatus.COMPLETED){
             return false;
         }
         LocalDateTime nowTime = LocalDateTime.now();
@@ -103,4 +117,41 @@ public class TaskServiceImpl implements TaskService {
         long diffTime = task.getDateNotify().getHour() * 60 + task.getDateNotify().getMinute()-(nowTime.getHour()* 60 + nowTime.getMinute());
         return isYear && isMonth && isDay && (diffTime <= 20) && (diffTime >= 0);
     }
+
+    @Override
+    public List<CroppedTask> findTaskInArhive() {
+        Optional<CroppedCategory> categoryArchive = categoryService.findAll().stream()
+                .filter(category -> category.getName().equals("Архив"))
+                .findFirst();
+
+        return categoryArchive
+                .map(croppedCategory
+                        -> findTaskByCategory(croppedCategory.getId()))
+                .orElse(List.of());
+    }
+
+    @Override
+    public List<CroppedTask> findTaskInNowDay() {
+        return categoryService.findAll()
+                .stream()
+                .filter(category -> !category.getName().equals("Архив"))
+                .flatMap(category ->
+                        taskRepository.findByCategory_Id(category.getId())
+                                .stream()
+                                .filter(TaskServiceImpl::isNow)
+                                .map(CroppedTask::new))
+                .toList();
+    }
+
+    private static boolean isNow(Task task) {
+        if(task.getDateNotify() == null) {
+            return false;
+        }
+        LocalDateTime nowTime = LocalDateTime.now();
+        boolean isYear = task.getDateNotify().getYear() == nowTime.getYear();
+        boolean isMonth = task.getDateNotify().getMonth() == nowTime.getMonth();
+        boolean isDay = task.getDateNotify().getDayOfMonth() == nowTime.getDayOfMonth();
+        return isYear && isMonth && isDay;
+    }
+
 }

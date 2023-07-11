@@ -8,4 +8,5 @@ public enum ERegularity {
     EVERY_OTHER_DAY,
     QUARTERLY,
     BIWEEKLY,
+    NONE
 }

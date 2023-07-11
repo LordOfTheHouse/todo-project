@@ -31,17 +31,17 @@ public class Task {
     private LocalDateTime dateNotify;
 
     @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
+    @JoinColumn(name = "status_id")
     private Status status;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
     @ManyToOne
-    @JoinColumn(name = "regularity_id", nullable = false)
+    @JoinColumn(name = "regularity_id")
     private Regularity regularity;
     @ManyToOne
-    @JoinColumn(name = "priority_id", nullable = false)
+    @JoinColumn(name = "priority_id")
     private Priority priority;
 
 }

@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +25,6 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("tasks")
 public class TaskController {
 
@@ -93,10 +94,22 @@ public class TaskController {
     }
 
     /**
+     * возвращает задачу по ее индиификатору.
+     *
+     * @return задача
+     */
+    @GetMapping("/{idTask}")
+    public CroppedTask getTask(@PathVariable long idTask){
+        log.info("Возвращает задачу по id");
+        return new CroppedTask(taskService.findById(idTask));
+    }
+
+    /**
      * Возвращает список всех задач пользователя по его идентификатору.
      *
      * @return список задач
      */
+
     @GetMapping
     public List<CroppedTask> getTasks(){
         log.info("Возвращает всек задач пользователя с id");
@@ -120,10 +133,35 @@ public class TaskController {
      *
      * @return список задач
      */
+
     @GetMapping("/notify")
     public List<CroppedTask> getNotifyTasks() {
         log.info("Получение задач требующих уведомления");
         return taskService.isNotifyTasks();
+    }
+
+    /**
+     * Возвращает список всех задач требующих сегодняшнего выполнения
+     *
+     * @return список задач
+     */
+    @GetMapping("/now")
+    public List<CroppedTask> getNowTasks() {
+        log.info("Получение задач требующих выполнить сегодня");
+        return taskService.findTaskInNowDay();
+    }
+
+    /**
+     * Возвращает список всех задач требующих сегодняшнего выполнения
+     *
+     * @return список задач
+     */
+    @GetMapping("/archive")
+    public List<CroppedTask> getArchive() {
+
+        List<CroppedTask> croppedTasks = taskService.findTaskInArhive();
+        log.info("Архив {}", croppedTasks);
+        return croppedTasks;
     }
 
     /**

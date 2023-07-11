@@ -27,9 +27,22 @@ public class CroppedTask {
         this.title = task.getTitle();
         this.description = task.getDescription();
         this.dateNotify = task.getDateNotify();
-        this.status = task.getStatus().getStatus();
-        this.priority = task.getPriority().getPriority();
-        this.regularity = task.getRegularity().getRegularity();
+        if(task.getStatus()!=null){
+            this.status = task.getStatus().getStatus();
+        } else {
+            this.status = EStatus.NONE;
+        }
+        if(task.getPriority() != null){
+            this.priority = task.getPriority().getPriority();
+        } else {
+            this.priority = EPriority.NONE;
+        }
+        if(task.getRegularity() != null){
+            this.regularity = task.getRegularity().getRegularity();
+        } else {
+            this.regularity = ERegularity.NONE;
+        }
+
         this.croppedCategory = new CroppedCategory(task.getCategory());
     }
 }

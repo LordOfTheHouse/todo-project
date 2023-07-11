@@ -1,4 +1,3 @@
-create schema if not exists katerniuksm;
 
 INSERT INTO katerniuksm.roles (id, name)
 VALUES
@@ -7,7 +6,8 @@ INSERT INTO katerniuksm.statuses (id, status)
 VALUES
     (1, 'IN_PROGRESS'),
     (2, 'ON_HOLD'),
-    (3, 'COMPLETED');
+    (3, 'COMPLETED'),
+    (4, 'NONE');
 INSERT INTO katerniuksm.regularities (id, regularity)
 VALUES
     (1, 'ONCE'),
@@ -23,4 +23,5 @@ VALUES
     (2, 'URGENT'),
     (3, 'HIGH'),
     (4, 'MEDIUM'),
-    (5, 'LOW');
+    (5, 'LOW'),
+    (6, 'NONE');

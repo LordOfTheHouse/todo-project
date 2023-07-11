@@ -5,6 +5,7 @@ export const taskSlice = createSlice({
     name: 'tasks',
     initialState: {
         tasks: [],
+        curTask: {},
         statuses: [],
         priorities: [],
         regularities: []
@@ -22,9 +23,12 @@ export const taskSlice = createSlice({
         setRegularities: (state, action) => {
             state.regularities = action.payload;
         },
+        setCurrentTask: (state, action) => {
+            state.curTask = action.payload;
+        },
     }
 })
 
-export const {setTasks, setStatuses, setPriorities, setRegularities} = taskSlice.actions
+export const {setTasks, setStatuses, setPriorities, setRegularities, setCurrentTask} = taskSlice.actions
 
 export default taskSlice.reducer

@@ -40,6 +40,8 @@ public class WebSecurityConfig {
                         auth.requestMatchers("/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/category/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/tasks/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/tasks/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 

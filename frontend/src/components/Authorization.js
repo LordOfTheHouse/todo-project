@@ -2,14 +2,19 @@ import {Modal, Form, Input, Button, message} from 'antd';
 import authService from "../services/authService";
 import {login} from "../slices/userSlice";
 import {useDispatch} from "react-redux";
-export const Authorization = ({isLoginModalVisible, handleLoginOk, handleLoginCancel}) => {
+import categoryService from "../services/categoryService";
+import taskService from "../services/taskService";
+export const Authorization = ({isLoginModalVisible, handleLoginCancel}) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         try {
             await authService.login(values).then((user) => {
-                    console.log(user)
-                    dispatch(login(user))
+                    console.log(user);
+                    handleLoginCancel();
+                    dispatch(login(user));
+                    categoryService.getCategory(dispatch);
+                    taskService.getTasks(dispatch);
                 },
                 (error) => {
                     message.error("Данные введены неверно");
@@ -19,15 +24,13 @@ export const Authorization = ({isLoginModalVisible, handleLoginOk, handleLoginCa
 
                     console.error(_content)
                 });
-            handleLoginOk();
             console.log(values);
         } catch (error) {
-            message.error("Неправильный логин или пароль");
         }
     };
     return (
         <>
-            <Modal title="Авторизация" visible={isLoginModalVisible} onOk={handleLoginOk} onCancel={handleLoginCancel}>
+            <Modal title="Авторизация" visible={isLoginModalVisible} footer={null} onCancel={handleLoginCancel}>
                 <Form form={form} onFinish={handleSubmit}>
                     <Form.Item label="username" name="username" rules={[{ required: true, message: 'Введите имя пользователя' }]}>
                         <Input />

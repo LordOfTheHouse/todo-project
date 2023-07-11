@@ -40,4 +40,6 @@ public interface CategoryService {
      * @param idCategory - индификатор категории
      */
     boolean existByCategoryUser(long idCategory);
+
+
 }

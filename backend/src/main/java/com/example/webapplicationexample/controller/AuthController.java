@@ -1,5 +1,6 @@
 package com.example.webapplicationexample.controller;
 
+import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.enum_model.ERole;
 import com.example.webapplicationexample.model.Role;
 import com.example.webapplicationexample.model.User;
@@ -7,10 +8,12 @@ import com.example.webapplicationexample.model.request.LoginRequest;
 import com.example.webapplicationexample.model.request.SignupRequest;
 import com.example.webapplicationexample.model.response.JwtResponse;
 import com.example.webapplicationexample.model.response.MessageResponse;
+import com.example.webapplicationexample.repository.CategoryRepository;
 import com.example.webapplicationexample.repository.RoleRepository;
 import com.example.webapplicationexample.repository.UserRepository;
 import com.example.webapplicationexample.security.jwt.JwtUtils;
 import com.example.webapplicationexample.security.services.UserDetailsImpl;
+import com.example.webapplicationexample.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +42,17 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, CategoryRepository categoryRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping("/signin")
@@ -92,6 +97,8 @@ public class AuthController {
         roles.add(userRole);
         user.setRoles(roles);
         userRepository.save(user);
+
+        categoryRepository.save(new Category(0, "Архив", user));
 
         return ResponseEntity.ok(new MessageResponse("Пользователь успешно зарегистрирован"));
     }

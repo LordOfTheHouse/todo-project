@@ -1,11 +1,14 @@
 package com.example.webapplicationexample.controller;
 
+import com.example.webapplicationexample.exception.UserNotFound;
 import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.cropped.CroppedCategory;
+import com.example.webapplicationexample.security.services.UserDetailsImpl;
 import com.example.webapplicationexample.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -15,7 +18,7 @@ import java.util.List;
  * Работа с rest запросами по категориям созданным пользователями
  */
 @Slf4j
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -75,7 +78,7 @@ public class CategoryController {
      */
     @GetMapping("/all")
     public ResponseEntity<List<CroppedCategory>> getCategories(){
-        log.info("Получение категорий по user id");
+        log.info("Получение категорий по user id{}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return ResponseEntity.ok().body(categoryService.findAll());
     }
 

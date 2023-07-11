@@ -1,10 +1,10 @@
 import axios from "axios";
-import {setStatuses, setTasks, setRegularities, setPriorities} from "../slices/taskSlice";
+import {setStatuses, setTasks, setRegularities, setPriorities, setCurrentTask} from "../slices/taskSlice";
 import authHeader from "./authHeader";
 import {API_URL} from "./API_URL";
 import {message} from "antd";
 
-const API_URL_TASK = API_URL + "tasks"
+const API_URL_TASK = "/tasks"
 
 const getTasks = (dispatch) => {
     return axios.get(API_URL_TASK, {headers: authHeader()}).then(
@@ -20,9 +20,52 @@ const getTasks = (dispatch) => {
         });
 };
 
+const getTask = (dispatch, id) => {
+    return axios.get(API_URL_TASK+`/${id}`, {headers: authHeader()}).then(
+        (response) => {
+            dispatch(setCurrentTask(response.data));
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            message.error(_content)
+            dispatch(setTasks([]));
+        });
+};
+
+const getNowTask = (dispatch) => {
+    return axios.get(API_URL_TASK+`/now`, {headers: authHeader()}).then(
+        (response) => {
+            dispatch(setTasks(response.data));
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            message.error(_content)
+            dispatch(setTasks([]));
+        });
+};
+
+const getArchiveTask = (dispatch) => {
+    return axios.get(API_URL_TASK+`/archive`, {headers: authHeader()}).then(
+        (response) => {
+            dispatch(setTasks(response.data));
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            message.error(_content)
+            dispatch(setTasks([]));
+        });
+};
+
 const getTasksByCategory = (dispatch, id) => {
     return axios.get(`${API_URL_TASK}/categories?categoryId=${id}`, {headers: authHeader()}).then(
         (response) => {
+            console.log(response.data)
             dispatch(setTasks(response.data));
         },
         (error) => {
@@ -34,7 +77,7 @@ const getTasksByCategory = (dispatch, id) => {
         });
 };
 const getTaskNotify = (dispatch) => {
-    return axios.get(API_URL_TASK + `/tasks/notify`, {headers: authHeader()}).then(
+    return axios.get(API_URL_TASK + `/notify`, {headers: authHeader()}).then(
         (response) => {
             dispatch(setTasks(response.data));
         },
@@ -47,11 +90,30 @@ const getTaskNotify = (dispatch) => {
         });
 };
 
+const getNotifyMessage = (dispatch) => {
+    return axios.get(API_URL_TASK + `/notify`, {headers: authHeader()}).then(
+        (response) => {
+            if(response.data){
+                response.data.forEach(task=> message.success(task.title + " СРОКИ ЖМУТ"));
+            }
+        },
+        (error) => {
+            const _content = (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            console.log(_content
+            );
+        });
+};
+
+setInterval(getNotifyMessage, 50000);
+
 export const getStatuses = (dispatch) => {
-    return axios.get(`${API_URL}/statuses`,  {headers: authHeader()}).then(
+    return axios.get(`/tasks/statuses`,  {headers: authHeader()}).then(
         (response) => {
             dispatch(setStatuses(response.data));
-        },
+            console.log(response.data)
+            },
         (error) => {
             const _content = (error.response && error.response.data) ||
                 error.message ||
@@ -62,7 +124,7 @@ export const getStatuses = (dispatch) => {
 };
 
 export const getRegularities = (dispatch) => {
-    return axios.get(`${API_URL}/regularities`,  {headers: authHeader()}).then(
+    return axios.get(`/tasks/regularities`,  {headers: authHeader()}).then(
         (response) => {
             dispatch(setRegularities(response.data));
         },
@@ -76,9 +138,10 @@ export const getRegularities = (dispatch) => {
 };
 
 export const getPriorities = (dispatch) => {
-    return axios.get(`${API_URL}/priorities`,  {headers: authHeader()}).then(
+    return axios.get(`/tasks/priorities`,  {headers: authHeader()}).then(
         (response) => {
             dispatch(setPriorities(response.data));
+
         },
         (error) => {
             const _content = (error.response && error.response.data) ||
@@ -99,7 +162,7 @@ export const createTask = ( dispatch, task) => {
                 error.message ||
                 error.toString();
             console.error(_content);
-            message.error("недостаточно прав доступа");
+            message.error("Действие невозможно");
         });
 };
 
@@ -120,7 +183,7 @@ const updateTask = (dispatch, task) => {
 const deleteTask = (dispatch, task) => {
     return axios.delete(API_URL_TASK + `/${task.id}`, {headers: authHeader()}).then(
         (response) => {
-            getTasksByCategory(dispatch, task.category.id)
+            getTasksByCategory(dispatch, task.croppedCategory.id)
         },
         (error) => {
             const _content = (error.response && error.response.data) ||
@@ -132,8 +195,8 @@ const deleteTask = (dispatch, task) => {
 };
 
 const taskService = {
-    getTaskNotify, getTasks, createTask, deleteTask, getTasksByCategory
-    , updateTask, getPriorities, getStatuses, getRegularities
+    getTaskNotify, getTask,getTasks, createTask, deleteTask, getTasksByCategory
+    , updateTask, getPriorities, getStatuses, getRegularities, getArchiveTask, getNowTask
 };
 
 export default taskService

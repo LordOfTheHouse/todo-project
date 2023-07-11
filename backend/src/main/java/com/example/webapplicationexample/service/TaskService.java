@@ -4,6 +4,7 @@ import com.example.webapplicationexample.model.Task;
 import com.example.webapplicationexample.model.cropped.CroppedTask;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Реализует логику работы с репозиторием Task
@@ -55,5 +56,20 @@ public interface TaskService {
      * @return Список задач, требующих уведомления.
      */
     List<CroppedTask> isNotifyTasks();
+
+    /**
+     * Получение задачи по id
+     */
+    Task findById(long idTask);
+
+    /**
+     * Возвращает список заметок пользователя из архива
+     */
+    List<CroppedTask> findTaskInArhive();
+
+    /**
+     * Возвращает список заметок пользователя которые требуется выполнить сегодня
+     */
+    List<CroppedTask> findTaskInNowDay();
 }
 

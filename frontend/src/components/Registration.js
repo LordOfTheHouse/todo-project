@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Button, Input, Form, Modal } from 'antd';
 import authService from "../services/authService";
 
-export const Registration = ({ isRegisterModalVisible, handleRegisterOk, handleRegisterCancel }) => {
+export const Registration = ({ isRegisterModalVisible, handleRegisterCancel }) => {
     const [form] = Form.useForm();
 
     const handleSubmit = async (values) => {
         try {
             await authService.register(values);
-            handleRegisterOk();
+            handleRegisterCancel();
             console.log(values);
         } catch (error) {
             console.log(error);
@@ -18,10 +18,10 @@ export const Registration = ({ isRegisterModalVisible, handleRegisterOk, handleR
     return (
         <Modal
             visible={isRegisterModalVisible}
-            onOk={handleRegisterOk}
+            footer={null}
             onCancel={handleRegisterCancel}
         >
-            <Form form={form} onFinish={handleSubmit}>
+            <Form form={form} onFinish={handleSubmit} style={{padding:"20px"}}>
                 <Form.Item
                     name="username"
                     label="Username"
