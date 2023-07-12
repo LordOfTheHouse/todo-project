@@ -12,6 +12,10 @@ const Notes = () => {
     const dispatch = useDispatch();
     const tasks = useSelector((state) => state.task.tasks);
     const curCategory = useSelector((state) => state.category.curCategory);
+    const categories = useSelector((state) => state.category.category);
+    const statuses = useSelector((state) => state.task.statuses);
+    const regularities = useSelector((state) => state.task.regularities);
+    const priorities = useSelector((state) => state.task.priorities);
     const [newNote, setNewNote] = useState('');
     const [drawerVisible, setDrawerVisible] = useState(false); // Состояние видимости Drawer
     const [selectedTask, setSelectedTask] = useState(null);
@@ -179,7 +183,6 @@ const Notes = () => {
                 <CloseCircleOutlined style={{ color: 'red' }}
                                      onClick={() => {
                                          taskService.deleteTask(dispatch, value);
-                                         handleDrawerClose();
                                      }}/>
             ),
         },
@@ -224,8 +227,30 @@ const Notes = () => {
         setSelectedTask(null);
     };
 
+    const handleDeleteAll = () => {
+        tasks.forEach(task=> taskService.deleteTask(dispatch, task));
+    };
+
+    const handleArchiveAll = () => {
+        const archive = categories.filter(category=>category.name === 'Архив')[0];
+        tasks.forEach(task=> {
+            const newTask = {
+                id: task.id,
+                title: task.title,
+                description: task.description,
+                dateNotify: task.dateNotify,
+                status: statuses.filter(status => status.status === task.status)[0],
+                category: archive,
+                priority: priorities.filter(priority => priority.priority === task.priority)[0],
+                regularity: regularities.filter(regularity => regularity.regularity === task.regularity)[0]
+            }
+            taskService.updateTask(dispatch, newTask);
+        });
+        taskService.getTasksByCategory(dispatch, curCategory);
+    };
+
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '40px' }}>
             <Search allowClear enterButton={
                 <Button icon={<PlusCircleOutlined style={{color:"blue"}}/> } />}
              value={newNote} onChange={handleInputChange} onSearch={handleAddNote} style={{marginBottom:"20px"}}/>
@@ -236,6 +261,22 @@ const Notes = () => {
                        },
                    })}
             />
+            <div
+                style={{
+                    position: "fixed",
+                    bottom: "20px",
+                    right: "20px",
+                    display: "flex",
+                    flexDirection: "row-reverse",
+                }}
+            >
+                <Button type="primary" danger onClick={handleDeleteAll}>
+                    Delete All
+                </Button>
+                <Button style={{ marginRight: "10px" }} type="primary" onClick={handleArchiveAll}>
+                    Archive All
+                </Button>
+            </div>
             <Drawer
                 title="Заметка"
                 placement="right"

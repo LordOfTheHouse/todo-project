@@ -2,6 +2,7 @@ package com.example.webapplicationexample.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Task {
 
     private String title;
 
+    @Size(max = 400)
     private String description;
 
     @Column(name = "date_notify")

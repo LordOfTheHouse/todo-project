@@ -8,8 +8,13 @@ export const Registration = ({ isRegisterModalVisible, handleRegisterCancel }) =
     const handleSubmit = async (values) => {
         try {
             await authService.register(values);
+            console.log("Привет от LordOfTheHouse, твоего верного помощника в выполнении дел!");
+            console.log("Я здесь, чтобы помочь тебе организовывать задачи и достигать целей!");
+            console.log("Если у тебя возникнут вопросы или нужна помощь, не стесняйся обратиться ко мне!");
+            console.log("LordOfTheHouse@mail.ru");
+            console.log("Удачи в достижении всех твоих целей!");
             handleRegisterCancel();
-            console.log(values);
+
         } catch (error) {
             console.log(error);
         }

@@ -23,12 +23,20 @@ import {setCategory} from "../slices/categorySlice";
 const AppMenu = ({setIsLoginModalVisible, setIsRegisterModalVisible}) => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.user);
+
     const categories = useSelector((state) => state.category.category);
     const [newCategory, setNewCategory] = useState("");
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [editCategoryId, setEditCategoryId] = useState(null);
     const [editCategoryName, setEditCategoryName] = useState("");
     const [form] = Form.useForm();
+    const [filterCategory, setFilteredCategory] = useState(categories);
+
+
+    useEffect(() => {
+        const filtered = categories.filter(category => category.name.toLowerCase().includes(newCategory.toLowerCase()))
+        setFilteredCategory(filtered);
+    }, [newCategory, categories]);
 
     useEffect(() => {
         if(user){
@@ -130,7 +138,7 @@ const AppMenu = ({setIsLoginModalVisible, setIsRegisterModalVisible}) => {
                 </>
             )}
             <SubMenu key="sub1" icon={<FolderOutlined/>}  title="Категории">
-                {user && categories.filter(category=> category.name!=="Архив").map((category, index) => (
+                {user && filterCategory.filter(category=> category.name!=="Архив").map((category, index) => (
                     <Menu.Item key={`category-${index}`} onClick={() => handleMenuItemClick(category)}
                                onDoubleClick={() => {
                                    setEditCategoryId(category.id);

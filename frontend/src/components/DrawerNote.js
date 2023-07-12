@@ -1,4 +1,4 @@
-import {Button, Card, DatePicker,  Input, Select} from "antd";
+import {Button, Card, DatePicker, Input, Select} from "antd";
 import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -80,8 +80,13 @@ export const DrawerNote = ({selectedNote, setDrawerVisible}) => {
     return (<>
             <div style={{marginBottom: '10px'}}>
                 <Card hoverable title="Заголовок и описание"
-                      style={{width: 300, fontFamily: 'Arial', fontSize: '14px', marginBottom: '5px'}}>
-                    <Input onChange={handleTitle} value={selectTitle} style={{marginBottom:"10px"}}/>
+                      style={{
+                          width: 300,
+                          fontFamily: 'Arial',
+                          fontSize: '14px',
+                          marginBottom: '5px'
+                      }}>
+                    <Input onChange={handleTitle} value={selectTitle} style={{marginBottom: "10px"}}/>
                     <Input.TextArea
                         onChange={handleDescription}
                         value={(selectedNote.description) ? selectedNote.description : selectDescription}
@@ -90,55 +95,103 @@ export const DrawerNote = ({selectedNote, setDrawerVisible}) => {
             </div>
             <div style={{marginBottom: '10px'}}>
                 <Card hoverable title="Дата и время напоминания"
-                      style={{width: 300, fontFamily: 'Arial', fontSize: '14px', marginBottom: '5px'}}>
-                    {selectedDate ? (
-                        <DatePicker
-                            format={dateFormat}
-                            defaultValue={dayjs(selectedDate, dateFormat)}
-                            disabledDate={disabledDate}
-                            onChange={handleDateChange}
-                            showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
-                        />
-                    ) : (
-                        <DatePicker
-                            format={dateFormat}
-                            disabledDate={disabledDate}
-                            onChange={handleDateChange}
-                            showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
-                        />
-                    )}
+                      style={{
+                          width: 300,
+                          fontFamily: 'Arial',
+                          fontSize: '14px',
+                          marginBottom: '5px',
+
+                      }}
+                >
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        {selectedDate ? (
+                            <DatePicker
+                                format={dateFormat}
+                                defaultValue={dayjs(selectedDate, dateFormat)}
+                                disabledDate={disabledDate}
+                                onChange={handleDateChange}
+                                showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
+                            />
+                        ) : (
+                            <DatePicker
+                                format={dateFormat}
+                                disabledDate={disabledDate}
+                                onChange={handleDateChange}
+                                showTime={{defaultValue: dayjs('00:00:00', 'HH:mm:ss')}}
+                            />
+                        )}
+                    </div>
                 </Card>
             </div>
             <div style={{marginBottom: '10px'}}>
                 <Card hoverable title="Характеристики"
-                      style={{width: 300, fontFamily: 'Arial', fontSize: '14px', marginBottom: '5px'}}>
-                    <Select
-                        value={selectedCategory}
-                        style={{width: '200px', height: '35px', fontFamily: 'Arial', fontSize: '14px'}}
-                        onChange={handleCategoryChange}
-                        options={categories.map((category) => ({value: category.name, title: category.id}))}
-                    />
-                    <Select
-                        value={selectedStatus}
-                        style={{width: '200px', height: '35px', fontFamily: 'Arial', fontSize: '14px'}}
-                        onChange={handleStatusChange}
-                        options={statuses.map((status) => ({value: status.status, title: status.id}))}
-                    />
-                    <Select
-                        value={selectedPriority}
-                        style={{width: '200px', height: '35px', fontFamily: 'Arial', fontSize: '14px'}}
-                        onChange={handlePriorityChange}
-                        options={priorities.map((priority) => ({value: priority.priority, title: priority.id}))}
-                    />
-                    <Select
-                        value={selectedRegularity}
-                        style={{width: '200px', height: '35px', fontFamily: 'Arial', fontSize: '14px'}}
-                        onChange={handleRegularityChange}
-                        options={regularities.map((regularity) => ({
-                            value: regularity.regularity,
-                            title: regularity.id
-                        }))}
-                    />
+                      style={{
+                          width: 300,
+                          fontFamily: 'Arial',
+                          fontSize: '14px',
+                          marginBottom: '5px',
+
+                      }}
+                >
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Select
+                            value={selectedCategory}
+                            style={{
+                                width: '200px',
+                                height: '35px',
+                                fontFamily: 'Arial',
+                                fontSize: '14px'
+                            }}
+                            onChange={handleCategoryChange}
+                            options={categories.map((category) => ({value: category.name, title: category.id}))}
+                        />
+                        <Select
+                            value={selectedStatus}
+                            style={{
+                                width: '200px',
+                                height: '35px',
+                                fontFamily: 'Arial',
+                                fontSize: '14px'
+                            }}
+                            onChange={handleStatusChange}
+                            options={statuses.map((status) => ({value: status.status, title: status.id}))}
+                        />
+                        <Select
+                            value={selectedPriority}
+                            style={{
+                                width: '200px',
+                                height: '35px',
+                                fontFamily: 'Arial',
+                                fontSize: '14px'
+                            }}
+                            onChange={handlePriorityChange}
+                            options={priorities.map((priority) => ({value: priority.priority, title: priority.id}))}
+                        />
+                        <Select
+                            value={selectedRegularity}
+                            style={{
+                                width: '200px',
+                                height: '35px',
+                                fontFamily: 'Arial',
+                                fontSize: '14px'
+                            }}
+                            onChange={handleRegularityChange}
+                            options={regularities.map((regularity) => ({
+                                value: regularity.regularity,
+                                title: regularity.id
+                            }))}
+                        />
+                    </div>
                 </Card>
             </div>
             <div>
@@ -155,10 +208,11 @@ export const DrawerNote = ({selectedNote, setDrawerVisible}) => {
                         alignItems: 'center',
                     }}
                 >
-                    <Button type="primary" onClick={handleSaveResults} style={{marginRight:"5px", width:'100px'}}>
+                    <Button type="primary" onClick={handleSaveResults} style={{marginRight: "5px", width: '100px'}}>
                         Сохранить
                     </Button>
-                    <Button type="primary" onClick={handleCloseDrawer} style={{marginLeft:"5px", width:'100px'}}>
+                    <Button type="primary" danger onClick={handleCloseDrawer}
+                            style={{marginLeft: "5px", width: '100px'}}>
                         Отменить
                     </Button>
                 </Card>
