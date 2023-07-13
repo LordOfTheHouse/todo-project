@@ -1,32 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import {Table, Drawer, Input, Tag, Button, Tooltip} from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {Radio, Table, Drawer, Input, Tag, Button, Tooltip, Space} from 'antd';
+import {useDispatch, useSelector} from 'react-redux';
 import taskService from '../services/taskService';
-import { DrawerNote } from "./DrawerNote";
-import {CloseCircleOutlined, PlusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {DrawerNote} from "./DrawerNote";
+import {CloseCircleOutlined, PlusCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {ChainAnimation} from "./ChainAnimation";
+import {useSpring, animated} from "react-spring";
+import {LeftChainAnimation} from "./LeftChainAnimation";
 
-
-const { Search } = Input;
+const {Search} = Input;
 
 const Notes = () => {
     const dispatch = useDispatch();
     const tasks = useSelector((state) => state.task.tasks);
     const curCategory = useSelector((state) => state.category.curCategory);
+    const cart = useSelector((state) => state.category.cart);
     const categories = useSelector((state) => state.category.category);
     const statuses = useSelector((state) => state.task.statuses);
     const regularities = useSelector((state) => state.task.regularities);
     const priorities = useSelector((state) => state.task.priorities);
     const [newNote, setNewNote] = useState('');
+    const [searchNote, setSearchNote] = useState('');
     const [drawerVisible, setDrawerVisible] = useState(false); // Состояние видимости Drawer
     const [selectedTask, setSelectedTask] = useState(null);
     const [filterTask, setFilteredTasks] = useState(tasks);
 
+
     const columns = [
+
         {
             title: 'Title',
             dataIndex: 'title',
             key: 'title',
-            width: '40%',
+            width: '30%',
             render: (text, value) => (
                 <Tooltip title={value.description}>
                     {text}
@@ -34,7 +40,28 @@ const Notes = () => {
             ),
             sorter: (a, b) => a.title.localeCompare(b.title),
         },
-
+        {
+            title: 'Complete',
+            dataIndex: 'complete',
+            key: 'complete',
+            width: "10%",
+            render: (text, task) => (<>
+                    {task.status !== "COMPLETED" ?<div style={{textAlign:"center"}}> <Radio onClick={(e) => {
+                        taskService.updateTask(dispatch, {
+                            id: task.id,
+                            title: task.title,
+                            description: task.description,
+                            dateNotify: task.dateNotify,
+                            category: task.croppedCategory,
+                            priority: priorities.filter(priority => priority.priority === task.priority)[0],
+                            regularity: regularities.filter(regularity => regularity.regularity === task.regularity)[0],
+                            status: statuses.filter(status => status.status === "COMPLETED")[0]
+                        }, curCategory)
+                        e.stopPropagation();
+                    }}/> </div>:<div style={{textAlign:"center"}}> <Radio defaultChecked={true} onClick={(e)=>{e.stopPropagation()}}/></div>}
+                </>
+            ),
+        },
         {
             title: 'Status',
             dataIndex: 'status',
@@ -68,9 +95,9 @@ const Notes = () => {
                 }
 
                 return (
-                        <div style={{ textAlign: 'right' }}>
-                            <Tag color={color}>{statusText}</Tag>
-                        </div>
+                    <div style={{textAlign: 'right'}}>
+                        <Tag color={color}>{statusText}</Tag>
+                    </div>
                 );
             },
             sorter: (a, b) => {
@@ -120,7 +147,7 @@ const Notes = () => {
                 }
 
                 return (
-                    <div style={{ textAlign: 'right' }}>
+                    <div style={{textAlign: 'right'}}>
                         <Tag color={color}>{priorityText}</Tag>
                     </div>
                 );
@@ -133,29 +160,42 @@ const Notes = () => {
             }
         },
         {
+            title: 'Date/Time',
+            dataIndex: 'date_time',
+            key: 'date_time',
+            render: (text, task) => <div style={{textAlign: 'right'}}>{task.dateNotify}</div>,
+            sorter: (a, b) => new Date(a.dateNotify) - new Date(b.dateNotify),
+        },
+        {
             title: 'Regularity',
             dataIndex: 'regularity',
             key: 'regularity',
             render: (text) => {
                 let regularityText = '';
-
+                let colorText = ''
                 switch (text) {
                     case 'DAILY':
                         regularityText = 'Daily';
+                        colorText = "#f2771f";
                         break;
                     case 'EVERY_OTHER_DAY':
                         regularityText = 'Every Other Day';
+                        colorText = "#ebd513";
                         break;
                     case 'WEEKLY':
                         regularityText = 'Weekly';
+                        colorText = "#98eb13";
                         break;
                     case 'BIWEEKLY':
+                        colorText = "#13eb37";
                         regularityText = 'Biweekly';
                         break;
                     case 'MONTHLY':
+                        colorText = "#13ebaa";
                         regularityText = 'Monthly';
                         break;
                     case 'QUARTERLY':
+                        colorText = "#139beb";
                         regularityText = 'Quarterly';
                         break;
                     default:
@@ -163,8 +203,10 @@ const Notes = () => {
                         break;
                 }
 
-                return (<div style={{ textAlign: 'right' }}>
-                        {regularityText}
+                return (<div style={{
+                    textAlign: 'right',
+                    color:{colorText}}}>
+                    {regularityText}
                 </div>);
             },
             sorter: (a, b) => {
@@ -179,10 +221,27 @@ const Notes = () => {
             dataIndex: 'action',
             key: 'action',
             align: 'center',
-            render: (name, value) => (
-                <CloseCircleOutlined style={{ color: 'red' }}
-                                     onClick={() => {
-                                         taskService.deleteTask(dispatch, value);
+            render: (name, task) => (
+                <CloseCircleOutlined style={{color: 'red'}}
+                                     onClick={(e) => {
+                                         if(curCategory === -5){
+                                             taskService.deleteTask(dispatch, task, curCategory);
+                                         } else {
+                                             console.log(cart)
+                                             const newTask = {
+                                                 id: task.id,
+                                                 title: task.title,
+                                                 description: task.description,
+                                                 dateNotify: task.dateNotify,
+                                                 status: statuses.filter(status => status.status === task.status)[0],
+                                                 category: cart,
+                                                 priority: priorities.filter(priority => priority.priority === task.priority)[0],
+                                                 regularity: regularities.filter(regularity => regularity.regularity === task.regularity)[0]
+                                             }
+                                             taskService.updateTask(dispatch, newTask, curCategory);
+                                         }
+
+                                         e.stopPropagation();
                                      }}/>
             ),
         },
@@ -190,10 +249,11 @@ const Notes = () => {
 
     ];
 
+
     useEffect(() => {
-        const filtered = tasks.filter(tasks => tasks.title.toLowerCase().includes(newNote.toLowerCase()))
+        const filtered = tasks.filter(tasks => tasks.title.toLowerCase().includes(searchNote.toLowerCase()))
         setFilteredTasks(filtered);
-    }, [newNote, tasks]);
+    }, [searchNote, tasks]);
 
     useEffect(() => {
         taskService.getTasks(dispatch);
@@ -201,18 +261,25 @@ const Notes = () => {
 
     const handleInputChange = (e) => {
         if (e && e.target && e.target.value) {
-
             setNewNote(e.target.value);
         } else {
             setNewNote('');
         }
     };
 
+    const handleSearchChange = (e) => {
+        if (e && e.target && e.target.value) {
+            setSearchNote(e.target.value);
+        } else {
+            setSearchNote('');
+        }
+    };
+
     const handleAddNote = () => {
         taskService.createTask(dispatch, {
             title: newNote,
-            description:"",
-            category: { id: curCategory }
+            description: "",
+            category: {id: curCategory}
         });
         setNewNote("");
     };
@@ -228,12 +295,30 @@ const Notes = () => {
     };
 
     const handleDeleteAll = () => {
-        tasks.forEach(task=> taskService.deleteTask(dispatch, task));
+        if(curCategory === -5){
+            tasks.forEach(task => taskService.deleteTask(dispatch, task, curCategory));
+        } else{
+            tasks.forEach(task => {
+                const newTask = {
+                    id: task.id,
+                    title: task.title,
+                    description: task.description,
+                    dateNotify: task.dateNotify,
+                    status: statuses.filter(status => status.status === task.status)[0],
+                    category: cart,
+                    priority: priorities.filter(priority => priority.priority === task.priority)[0],
+                    regularity: regularities.filter(regularity => regularity.regularity === task.regularity)[0]
+                }
+                taskService.updateTask(dispatch, newTask, curCategory);
+            });
+        }
+
+
     };
 
     const handleArchiveAll = () => {
-        const archive = categories.filter(category=>category.name === 'Архив')[0];
-        tasks.forEach(task=> {
+        const archive = categories.filter(category => category.name === 'Архив')[0];
+        tasks.forEach(task => {
             const newTask = {
                 id: task.id,
                 title: task.title,
@@ -244,22 +329,65 @@ const Notes = () => {
                 priority: priorities.filter(priority => priority.priority === task.priority)[0],
                 regularity: regularities.filter(regularity => regularity.regularity === task.regularity)[0]
             }
-            taskService.updateTask(dispatch, newTask);
+            taskService.updateTask(dispatch, newTask, curCategory);
         });
-        taskService.getTasksByCategory(dispatch, curCategory);
+    };
+    const [showSearch, setShowSearch] = useState(false);
+    const [springProps, setSpringProps] = useSpring(() => ({
+        opacity: 0,
+        width: 0,
+    }));
+
+
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+
+        setSpringProps({
+            opacity: showSearch ? 0 : 1,
+            width: showSearch ? 0 : 200,
+        });
     };
 
     return (
-        <div style={{ padding: '40px' }}>
-            <Search allowClear enterButton={
-                <Button icon={<PlusCircleOutlined style={{color:"blue"}}/> } />}
-             value={newNote} onChange={handleInputChange} onSearch={handleAddNote} style={{marginBottom:"20px"}}/>
+        <div style={{padding: '80px 125px'}}>
+            {categories.filter(category => category.id === curCategory && category.name === "гача")[0] &&<> <ChainAnimation bot={"0px"} rig={"-20px"}/> <LeftChainAnimation bot={"0px"} lef={"180px"}/></>}
+
+            {curCategory>=0 && <Search allowClear enterButton={
+                <Button icon={<PlusCircleOutlined style={{color: "blue"}}/>}/>}
+                    value={newNote} onSearch={handleAddNote} onChange={handleInputChange}
+                    style={{marginBottom: "20px"}}/>}
+            <div style={{marginBottom: "10px"}}>
+                <Space>
+                    <SearchOutlined onClick={toggleSearch} style={{color:"white"}}/>
+
+                    <animated.div style={{ ...springProps, overflow: "hidden" }}>
+                        <Input.Search
+                            placeholder="Поиск"
+                            value={searchNote} onChange={handleSearchChange}
+                        />
+                    </animated.div>
+                </Space>
+            </div>
             <Table columns={columns} dataSource={filterTask} rowKey="id"
                    onRow={(record) => ({
                        onClick: () => {
                            handleRowClick(record);
                        },
+
                    })}
+
+                   expandable={{
+                       expandedRowRender: (record) => (
+                           <p
+                               style={{
+                                   margin: 0,
+                               }}
+                           >
+                               {record.description}
+                           </p>
+                       ),
+                       rowExpandable: (record) => record.title !== 'Not Expandable',
+                   }}
             />
             <div
                 style={{
@@ -273,7 +401,7 @@ const Notes = () => {
                 <Button type="primary" danger onClick={handleDeleteAll}>
                     Delete All
                 </Button>
-                <Button style={{ marginRight: "10px" }} type="primary" onClick={handleArchiveAll}>
+                <Button style={{marginRight: "10px"}} type="primary" onClick={handleArchiveAll}>
                     Archive All
                 </Button>
             </div>

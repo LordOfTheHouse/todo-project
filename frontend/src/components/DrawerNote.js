@@ -8,6 +8,7 @@ import taskService from "../services/taskService";
 export const DrawerNote = ({selectedNote, setDrawerVisible}) => {
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.category.category);
+    const curCategory = useSelector((state) => state.category.curCategory);
     const statuses = useSelector((state) => state.task.statuses);
     const regularities = useSelector((state) => state.task.regularities);
     const priorities = useSelector((state) => state.task.priorities);
@@ -65,7 +66,7 @@ export const DrawerNote = ({selectedNote, setDrawerVisible}) => {
                 category: categories.filter(category => category.name === selectedCategory)[0],
                 priority: priorities.filter(priority => priority.priority === selectedPriority)[0],
                 regularity: regularities.filter(regularity => regularity.regularity === selectedRegularity)[0]
-            }
+            }, curCategory
         )
         setDrawerVisible(false);
     };

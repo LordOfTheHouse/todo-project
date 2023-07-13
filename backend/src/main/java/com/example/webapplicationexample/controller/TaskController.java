@@ -165,6 +165,16 @@ public class TaskController {
     }
 
     /**
+     * Возвращает корзину
+     */
+    @GetMapping("/cart")
+    public List<CroppedTask> getCart() {
+        List<CroppedTask> croppedTasks = taskService.findTaskInCart();
+        log.info("Корзина {}", croppedTasks);
+        return croppedTasks;
+    }
+
+    /**
      * Возвращает все статусы для задачи
      *
      * @return список статусов

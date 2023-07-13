@@ -7,6 +7,9 @@ import Notes from "../components/Notes";
 import {useSelector} from "react-redux";
 import {Content} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
+import todo from "../img/todo2.jpg"
+
+
 
 const TaskPage = () => {
     const user = useSelector((state) => state.user.user);
@@ -37,9 +40,12 @@ const TaskPage = () => {
             </Sider>
 
             <Layout>
+
+                <div style={{background:`url(${todo})`, height:"100%"}}>
                 <Content>
                     {user && <Notes/>}
                 </Content>
+                </div>
             </Layout>
             <Authorization setRegistrationVisible={setIsRegisterModalVisible} isLoginModalVisible={isLoginModalVisible} handleLoginCancel={handleLoginCancel}/>
             <Registration handleRegisterCancel={handleRegisterCancel}

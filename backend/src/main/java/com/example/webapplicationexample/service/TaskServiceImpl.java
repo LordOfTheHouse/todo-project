@@ -5,6 +5,7 @@ import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.Task;
 import com.example.webapplicationexample.model.cropped.CroppedCategory;
 import com.example.webapplicationexample.model.cropped.CroppedTask;
+import com.example.webapplicationexample.model.enum_model.ERegularity;
 import com.example.webapplicationexample.model.enum_model.EStatus;
 import com.example.webapplicationexample.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,11 +93,12 @@ public class TaskServiceImpl implements TaskService {
     public List<CroppedTask> isNotifyTasks() {
         return categoryService.findAll()
                 .stream()
-                .filter(category -> !category.getName().equals("Архив"))
+                .filter(category -> !(category.getName().equals("Архив")
+                                        || category.getName().equals("Корзина")))
                 .flatMap(category ->
                         taskRepository.findByCategory_Id(category.getId())
                                 .stream()
-                                .filter(TaskServiceImpl::isNotify)
+                                .filter(this::isNotify)
                                 .map(CroppedTask::new))
                 .toList();
     }
@@ -106,8 +108,8 @@ public class TaskServiceImpl implements TaskService {
      * @param task - задача
      * @return истина если о задаче требуется уведомлять
      */
-    private static boolean isNotify(Task task) {
-        if(task.getDateNotify() == null || task.getStatus().getStatus() == EStatus.COMPLETED){
+    private boolean isNotify(Task task) {
+        if(task.getDateNotify() == null){
             return false;
         }
         LocalDateTime nowTime = LocalDateTime.now();
@@ -115,7 +117,49 @@ public class TaskServiceImpl implements TaskService {
         boolean isMonth = task.getDateNotify().getMonth() == nowTime.getMonth();
         boolean isDay  = task.getDateNotify().getDayOfMonth() == nowTime.getDayOfMonth();
         long diffTime = task.getDateNotify().getHour() * 60 + task.getDateNotify().getMinute()-(nowTime.getHour()* 60 + nowTime.getMinute());
-        return isYear && isMonth && isDay && (diffTime <= 20) && (diffTime >= 0);
+        if(isYear && isMonth && isDay && diffTime < 0
+                && !(task.getRegularity().getRegularity().equals(ERegularity.NONE)
+                || task.getRegularity().getRegularity().equals(ERegularity.ONCE))){
+            updateRegularityTask(task);
+        }
+        return isYear && isMonth && isDay && (diffTime <= 20) && (diffTime >= 0) && !(task.getStatus().getStatus() == EStatus.COMPLETED);
+    }
+
+    private void updateRegularityTask(Task task){
+        switch (task.getRegularity().getRegularity()){
+            case EVERY_OTHER_DAY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusDays(2);
+
+                task.setDateNotify(everyOtherDayNotify);
+            }
+            case DAILY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusDays(1);
+                task.setDateNotify(everyOtherDayNotify);
+            }
+            case MONTHLY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusMonths(1);
+                task.setDateNotify(everyOtherDayNotify);
+            }
+            case WEEKLY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusDays(7);
+                task.setDateNotify(everyOtherDayNotify);
+            }
+            case BIWEEKLY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusDays(14);
+                task.setDateNotify(everyOtherDayNotify);
+            }
+            case QUARTERLY -> {
+                LocalDateTime everyOtherDayNotify = task.getDateNotify();
+                everyOtherDayNotify = everyOtherDayNotify.plusMonths(3);
+                task.setDateNotify(everyOtherDayNotify);
+            }
+        }
+        update(task);
     }
 
     @Override
@@ -131,10 +175,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<CroppedTask> findTaskInCart() {
+        Optional<CroppedCategory> categoryArchive = categoryService.findAll().stream()
+                .filter(category -> category.getName().equals("Корзина"))
+                .findFirst();
+
+        return categoryArchive
+                .map(croppedCategory
+                        -> findTaskByCategory(croppedCategory.getId()))
+                .orElse(List.of());
+    }
+
+    @Override
     public List<CroppedTask> findTaskInNowDay() {
         return categoryService.findAll()
                 .stream()
-                .filter(category -> !category.getName().equals("Архив"))
+                .filter(category -> !(category.getName().equals("Архив")
+                                        || category.getName().equals("Корзина")))
                 .flatMap(category ->
                         taskRepository.findByCategory_Id(category.getId())
                                 .stream()

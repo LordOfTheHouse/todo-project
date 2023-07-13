@@ -15,7 +15,8 @@ VALUES
     (4, 'WEEKLY'),
     (5, 'BIWEEKLY'),
     (6, 'MONTHLY'),
-    (7, 'QUARTERLY');
+    (7, 'QUARTERLY'),
+    (8, 'NONE');
 INSERT INTO katerniuksm.priorities (id, priority)
 VALUES
     (1, 'CRITICAL'),

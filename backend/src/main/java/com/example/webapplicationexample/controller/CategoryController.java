@@ -46,32 +46,7 @@ public class CategoryController {
     public ResponseEntity<?> addCategory(@Valid @RequestBody Category category){
         log.info("Добавление новой категории {}", category);
         long idCategory = categoryService.save(category);
-        Task randomHistory = generateSecretTask();
-        Category newCategory = new Category();
-        newCategory.setId(idCategory);
-        randomHistory.setCategory(newCategory);
-        log.info("{}", randomHistory);
-        taskService.save(randomHistory);
         return ResponseEntity.created(URI.create("/category/"+idCategory)).build();
-    }
-
-    private Task generateSecretTask(){
-        ArrayList<Task> randomTask = new ArrayList<>();
-        Task task = new Task();
-        task.setTitle("Секретная миссия");
-        task.setDescription("Тайна открыта! У вас есть новая секретная миссия, агент! Ваше задание, если вы решите его принять, состоит в том, чтобы выполнить все задачи на этом списке с максимальной эффективностью и безошибочности. Ваш успех зависит от вас, а также от секретных функций, которые доступны только вам и вашему Todo List. Удачи, агент!");
-        randomTask.add(task);
-        Task task2 = new Task();
-        task2.setTitle("Тур по воображаемому миру");
-        task2.setDescription("Добро пожаловать в удивительный воображаемый мир! Ваше задание - отправиться в эпическое путешествие по различным воображаемым местам и испытать удивительные приключения. Каждая задача представляет собой новую локацию, которую вам предстоит посетить. Ваша фантазия и творческий подход здесь неограничен! Готовы отправиться в этот воображаемый тур? Приятного путешествия!");
-        randomTask.add(task2);
-        Task task3 = new Task();
-        task3.setTitle("Тайна пропавшего клада");
-        task3.setDescription("Древний затерянный клад был обнаружен! Отправляйтесь в захватывающее приключение, чтобы раскрыть тайну и найти этот драгоценный клад. Ваша задача - разгадать загадки, расшифровать карту и пройти испытания, чтобы прийти к сокровищу. Вас ждет увлекательное путешествие, полное загадок, головоломок и неожиданных поворотов событий. Готовы стать частью этого уникального приключения?");
-        randomTask.add(task3);
-        Random random = new Random();
-        int randomIndex = random.nextInt(randomTask.size());
-        return randomTask.get(randomIndex);
     }
 
     /**

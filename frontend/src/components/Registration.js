@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Input, Form, Modal } from 'antd';
+import {Button, Input, Form, Modal, message} from 'antd';
 import authService from "../services/authService";
+import {login} from "../slices/userSlice";
+import categoryService from "../services/categoryService";
+import taskService from "../services/taskService";
+import {useDispatch} from "react-redux";
 
 export const Registration = ({ isRegisterModalVisible, handleRegisterCancel }) => {
     const [form] = Form.useForm();
-
+    const dispatch = useDispatch();
     const handleSubmit = async (values) => {
         try {
             await authService.register(values);
@@ -13,8 +17,21 @@ export const Registration = ({ isRegisterModalVisible, handleRegisterCancel }) =
             console.log("Если у тебя возникнут вопросы или нужна помощь, не стесняйся обратиться ко мне!");
             console.log("LordOfTheHouse@mail.ru");
             console.log("Удачи в достижении всех твоих целей!");
-            handleRegisterCancel();
 
+            await authService.login(values).then((user) => {
+                dispatch(login(user));
+                categoryService.getCategory(dispatch);
+                taskService.getTasks(dispatch);
+                },
+                (error) => {
+                message.error("Данные введены неверно");
+                const _content = (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+
+                        console.error(_content)
+                    });
+            handleRegisterCancel();
         } catch (error) {
             console.log(error);
         }

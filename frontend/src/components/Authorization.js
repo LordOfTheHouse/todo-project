@@ -4,13 +4,17 @@ import {login} from "../slices/userSlice";
 import {useDispatch} from "react-redux";
 import categoryService from "../services/categoryService";
 import taskService from "../services/taskService";
+import {useNavigate} from "react-router-dom";
 export const Authorization = ({isLoginModalVisible, handleLoginCancel}) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleSubmit = async (values) => {
         try {
             await authService.login(values).then((user) => {
-                    console.log(user);
+                    if(user.username === "angelina"){
+                        navigate("/angelina");
+                    }
                     handleLoginCancel();
                     dispatch(login(user));
                     categoryService.getCategory(dispatch);
@@ -30,7 +34,7 @@ export const Authorization = ({isLoginModalVisible, handleLoginCancel}) => {
     };
     return (
         <>
-            <Modal title="Авторизация" visible={isLoginModalVisible} footer={null} onCancel={handleLoginCancel}>
+            <Modal title="Вход" visible={isLoginModalVisible} footer={null} onCancel={handleLoginCancel}>
                 <Form form={form} onFinish={handleSubmit}>
                     <Form.Item label="username" name="username" rules={[{ required: true, message: 'Введите имя пользователя' }]}>
                         <Input />

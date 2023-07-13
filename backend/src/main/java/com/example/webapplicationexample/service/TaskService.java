@@ -71,5 +71,8 @@ public interface TaskService {
      * Возвращает список заметок пользователя которые требуется выполнить сегодня
      */
     List<CroppedTask> findTaskInNowDay();
+
+
+    List<CroppedTask> findTaskInCart();
 }
 

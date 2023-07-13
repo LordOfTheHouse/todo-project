@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public long save(Category category) {
         category.setUser(new User(getUserIdSecurityContext()));
-        if(category.getCategory().equals("Архив")){
+        if(category.getCategory().equals("Архив") || category.getCategory().equals("Корзина")){
             category.setCategory(category.getCategory()+"1");
         }
         return categoryRepository.save(category).getId();
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean update(Category category) {
-        if(category.getCategory().equals("Архив")){
+        if(category.getCategory().equals("Архив") || category.getCategory().equals("Корзина")){
             category.setCategory(category.getCategory()+"1");
         }
         if (categoryRepository.existsByIdAndUser_Id(category.getId(), getUserIdSecurityContext())){ // ЗАМЕНИТЬ НА getUserIdSecurityContext()
@@ -76,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CroppedCategory> findAll() {
     log.info("id {}",getUserIdSecurityContext());
-        return categoryRepository.findCategoryByUser_Id(getUserIdSecurityContext()) // ЗАМЕНИТЬ НА getUserIdSecurityContext()
+        return categoryRepository.findCategoryByUser_Id(getUserIdSecurityContext())
                 .stream()
                 .map(CroppedCategory::new)
                 .toList();
@@ -84,6 +84,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean existByCategoryUser(long idCategory) {
-        return categoryRepository.existsByIdAndUser_Id(idCategory, getUserIdSecurityContext());// ЗАМЕНИТЬ НА getUserIdSecurityContext()
+        return categoryRepository.existsByIdAndUser_Id(idCategory, getUserIdSecurityContext());
     }
 }

@@ -99,7 +99,7 @@ public class AuthController {
         userRepository.save(user);
 
         categoryRepository.save(new Category(0, "Архив", user));
-
+        categoryRepository.save(new Category(-1, "Корзина", user));
         return ResponseEntity.ok(new MessageResponse("Пользователь успешно зарегистрирован"));
     }
 }
