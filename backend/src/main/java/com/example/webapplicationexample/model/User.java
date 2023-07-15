@@ -13,7 +13,7 @@ import java.util.Set;
 
 
 /**
- * Покупатель
+ * Пользователь
  */
 @Entity
 @Data
@@ -50,5 +50,9 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User(long id) {
+        this.id = id;
     }
 }

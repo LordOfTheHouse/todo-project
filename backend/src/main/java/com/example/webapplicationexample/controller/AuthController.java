@@ -1,5 +1,6 @@
 package com.example.webapplicationexample.controller;
 
+import com.example.webapplicationexample.model.Category;
 import com.example.webapplicationexample.model.enum_model.ERole;
 import com.example.webapplicationexample.model.Role;
 import com.example.webapplicationexample.model.User;
@@ -7,16 +8,19 @@ import com.example.webapplicationexample.model.request.LoginRequest;
 import com.example.webapplicationexample.model.request.SignupRequest;
 import com.example.webapplicationexample.model.response.JwtResponse;
 import com.example.webapplicationexample.model.response.MessageResponse;
+import com.example.webapplicationexample.repository.CategoryRepository;
 import com.example.webapplicationexample.repository.RoleRepository;
 import com.example.webapplicationexample.repository.UserRepository;
 import com.example.webapplicationexample.security.jwt.JwtUtils;
 import com.example.webapplicationexample.security.services.UserDetailsImpl;
+import com.example.webapplicationexample.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +30,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Авторизация, регистрация пользователей
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -35,15 +42,17 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, CategoryRepository categoryRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping("/signin")
@@ -60,7 +69,7 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         JwtResponse body = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
@@ -79,37 +88,18 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Email уже используется"));
         }
 
-        // Создаем нового пользователя
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-                        roles.add(adminRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-                        roles.add(userRole);
-                }
-            });
-        }
-
+        roles.add(userRole);
         user.setRoles(roles);
         userRepository.save(user);
 
+        categoryRepository.save(new Category(0, "Архив", user));
+        categoryRepository.save(new Category(-1, "Корзина", user));
         return ResponseEntity.ok(new MessageResponse("Пользователь успешно зарегистрирован"));
     }
 }
